@@ -15,60 +15,78 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Container(
             decoration: BoxDecoration(
-                gradient: LinearGradient(
-              colors: [
-                Colors.lightGreen.shade50,
-                Colors.green.shade900,
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.lightGreen.shade50,
+                  Colors.green.shade900,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
             ),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text("Select Image for Detection",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              const Text(
+                "Select Image for Detection",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 80,
               ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: const Size(200, 50),
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        elevation: 3,
+              Center(
+                child: Container(
+                  color: Colors.grey.shade50,
+                  width: 250,
+                  height: 250,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.image),
+                      Text(
+                        'Select Photo',
+                        style: TextStyle(color: Colors.grey.shade400),
                       ),
-                      onPressed: () {},
-                      child: const Text("Upload a Photo",
-                          style: TextStyle(color: Colors.black)),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: const Size(200, 50),
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        elevation: 3,
-                      ),
-                      onPressed: () {},
-                      child: Text("Take a Photo",
-                          style: TextStyle(color: Colors.black)),
-                    )
-                  ],
+                    ],
+                  ),
                 ),
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              Column(
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: const Size(200, 50),
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      elevation: 3,
+                    ),
+                    onPressed: () {},
+                    child: const Text("Upload Photo",
+                        style: TextStyle(color: Colors.black)),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: const Size(200, 50),
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      elevation: 3,
+                    ),
+                    onPressed: () {},
+                    child: const Text("Take Photo",
+                        style: TextStyle(color: Colors.black)),
+                  )
+                ],
               ),
             ],
           ),
