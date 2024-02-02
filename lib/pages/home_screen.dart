@@ -14,9 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // variable to store the selected image
   File? _image;
 // variable to store the output of image classification
-  List _output = [];
-
-  bool isLoading = false;
+  List? _output;
 
 // method to capture an image
   void captureImage() async {
@@ -31,6 +29,22 @@ class _HomeScreenState extends State<HomeScreen> {
       _image = File(image!.path);
     });
     // call method to classify the captured image
+    classifyImage(_image!);
+  }
+
+  // method to upload an image
+  void uploadImage() async {
+    // create an image picker instance
+    final picker = ImagePicker();
+    // get image from gallery
+    var image = await picker.pickImage(source: ImageSource.gallery);
+
+    // update the UI with the image
+    setState(() {
+      // store the image file
+      _image = File(image!.path);
+    });
+    // call method to classify the image
     classifyImage(_image!);
   }
 
@@ -50,20 +64,18 @@ class _HomeScreenState extends State<HomeScreen> {
       threshold: 0.5,
       imageMean: 127,
     );
+    if (output == null) return;
     // update the UI with the classification output
     setState(() {
       // store the classification output
-      _output = output!;
-      isLoading = false;
+      _output = output;
     });
-    print(_output);
   }
 
   @override
   void initState() {
     // load the TFLite model when the widget initializes
     loadModel();
-    isLoading = true;
     super.initState();
   }
 
@@ -101,73 +113,82 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 80,
               ),
-              Center(
-                // container widget for image placeholder
-                child: isLoading
-                    ? Container(
-                        color: Colors.grey.shade50,
-                        width: 250,
-                        height: 250,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.image),
-                            Text(
-                              'Select Photo',
-                              style: TextStyle(color: Colors.grey.shade400),
+              Column(
+                children: [
+                  SizedBox(
+                    height: 200,
+                    child: _image != null
+                        ? Image.file(_image!)
+                        : Container(
+                            color: Colors.grey.shade50,
+                            width: 250,
+                            height: 250,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.image),
+                                Text(
+                                  'Select Photo',
+                                  style: TextStyle(color: Colors.grey.shade400),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      )
-                    : Column(
-                        children: [
-                          SizedBox(
-                            height: 200,
-                            child: Image.file(_image!),
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Text("${_output[0]['label']}")
-                        ],
-                      ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  _output != null && _output!.isNotEmpty && _image != null
+                      ? Text(
+                          "${_output![0]['label']}") // display classification output if available
+                      : _image != null
+                          ? const Text(
+                              "Retake Photo", // display message to retake photo if classification failed
+                              style: TextStyle(color: Colors.red),
+                            )
+                          : Container(), // display an empty container if no image is selected
+                ],
               ),
               const SizedBox(
                 height: 25,
               ),
               // column widget to arrange buttons vertically
-              Column(
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: const Size(200, 50),
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
+              Center(
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: const Size(200, 50),
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        elevation: 3,
                       ),
-                      elevation: 3,
+                      onPressed: uploadImage,
+                      child: const Text("Upload Photo",
+                          style: TextStyle(color: Colors.black)),
                     ),
-                    onPressed: () {},
-                    child: const Text("Upload Photo",
-                        style: TextStyle(color: Colors.black)),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: const Size(200, 50),
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: const Size(200, 50),
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        elevation: 3,
                       ),
-                      elevation: 3,
-                    ),
-                    onPressed: captureImage,
-                    child: const Text("Take Photo",
-                        style: TextStyle(color: Colors.black)),
-                  )
-                ],
+                      onPressed: captureImage,
+                      child: const Text(
+                        "Take Photo",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ],
           ),
